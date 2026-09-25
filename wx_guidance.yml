@@ -1,0 +1,23 @@
+# Save as .github/workflows/wx_guidance.yml in a private GitHub repo.
+# Runs at 22:00 UTC (6 PM EDT / 5 PM EST), Mon-Thu, before the 00Z deadline.
+name: WxChallenge guidance
+on:
+  schedule:
+    - cron: "0 22 * * 1-4"
+  workflow_dispatch:   # adds a "Run workflow" button for manual runs
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - run: python wx_guidance.py
+        env:
+          STATION: ${{ vars.STATION }}          # repo variable, e.g. KATL
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}   # Gmail app password
